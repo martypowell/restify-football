@@ -50,7 +50,7 @@ server.listen(config.port, () => {
     });
 
     db.once('open', () => {
-        require('./Routes/Teams')(server);
+        require('./Routes')(server);
         console.log(`Server is listening on port ${config.port}`);
     });
 });
