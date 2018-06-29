@@ -7,10 +7,10 @@ const TeamPlayerSchema = new mongoose.Schema(
 	{
 		number: {
 			type: Number,
-			required: true,
+			required: false,
         },
         position: {
-            type: Array,
+            type: String,
 			required: false,
         },
 	},
