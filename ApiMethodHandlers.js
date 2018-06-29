@@ -34,6 +34,19 @@ const GetAll = (Model, request, response, next) => {
     });
 };
 
+const GetSome = (Model, request, response, next, query) => {
+    Model.find(query, (err, docs) => {
+        if (err) {
+            return handleInvalidContent(err, next);
+        }
+
+        response.send(docs);
+        next();
+    });
+};
+
+
+
 const GetById = (Model, request, response, next) => {
     Model.findOne({ _id: request.params.id }, (err, doc) => {
         if (err) {
@@ -45,12 +58,12 @@ const GetById = (Model, request, response, next) => {
     });
 }
 
-const Save = (Model, request, response, next) => {
+const Save = (Model, request, response, next, data) => {
     if (!request.is('application/json')) {
         handleInvalidData(next);
     }
 
-    const data = request.body || {};
+    data = Object.assign({}, data || (request.body || {}));
     const model = new Model(data);
 
     model.save(err => {
@@ -69,9 +82,9 @@ class ApiEndpointHelper {
 
         this.GetAll = this.GetAll.bind(this);
         this.GetById = this.GetById.bind(this);
+        this.GetSome = this.GetSome.bind(this);
+        this.Save = this.Save.bind(this);
     }
-
-    
 
     GetAll(request, response, next) {
         GetAll(this.Model, request, response, next);
@@ -81,8 +94,12 @@ class ApiEndpointHelper {
         GetById(this.Model, request, response, next);
     }
 
-    Save(request, response, next) {
-        Save(this.Model, request, response, next);
+    GetSome(request, response, next, query) {
+        GetSome(this.Model, request, response, next, query);
+    }
+
+    Save(request, response, next, data) {
+        Save(this.Model, request, response, next, data);
     }
 };
 
